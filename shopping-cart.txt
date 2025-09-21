@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Shopping Cart</title>
+  
+  <style>
+    body { font-family: sans-serif; padding: 30px; background: #f0f0f0; }
+    h1, h2 { color: #333; text-align: left; }
+    .box { background: #fff; padding: 15px; margin: 8px 0; border-radius: 6px; 
+           box-shadow: 2px 2px 6px #ccc; width: 200px; text-align: left; }
+    .flex { display: flex; }   /* stack boxes vertically (left aligned) */
+    img { width: 50px; height: 50px; object-fit: cover; display: block; margin-bottom: 6px; }
+    button { margin-top: 6px; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    .add { background: green; color: white; }
+    .remove { background: red; color: white; }
+    #payNow { background: blue; color: white; margin-top: 10px; padding: 8px 15px; }
+    input[type="number"] { width: 45px; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  
+    <h1>Srija's Mart</h1>
+    <div class="flex">
+      <div class="box">
+        <img src="https://www.shutterstock.com/image-photo/background-assorted-chocolate-candies-600nw-2545554949.jpg"><br>
+        Candies<br>₹100
+        <button class="add" onclick="add('Chocolates', 100)">Add</button>
+      </div>
+      <div class="box">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/049/323/355/small_2x/colorful-vegetables-icons-and-doodles-clipart-harvest-season-local-food-market-agriculture-isolated-on-white-vector.jpg"><br>
+        Vegetables<br>₹200
+        <button class="add" onclick="add('Vegetables', 200)">Add</button>
+      </div>
+    </div>
+  
+
+  
+    <h2>🛒 Cart</h2>
+    <div id="cart" class="flex"></div>
+    <h3>Total: ₹<span id="total">0</span></h3>
+    <button id="payNow" onclick="pay()">Pay Now</button>
+  
+
+  <script>
+    let cart = [];
+
+    const add = (name, price) => {
+      let item = cart.find(i => i.name === name);
+      item ? item.qty++ : cart.push({ name, price, qty: 1 });
+      show();
+    };
+
+    const changeQty = (name, val) => {
+      let item = cart.find(i => i.name === name);
+      item.qty = Math.max(1, parseInt(val));
+      show();
+    };
+
+    const remove = name => {
+      cart = cart.filter(i => i.name !== name);
+      show();
+    };
+
+    const pay = () => {
+      let total = cart.reduce((t, i) => t + i.price * i.qty, 0);
+      alert(cart.length ? `Thank you! You paid ₹${total}` : "Cart is empty!");
+      cart = [];
+      show();
+    };
+
+    const show = () => {
+      let html = '', total = 0;
+      cart.forEach(i => {
+        let sub = i.price * i.qty;
+        total += sub;
+        html += `<div class="box"><b>${i.name}</b><br>₹${i.price}
+          <input type="number" value="${i.qty}" min="1" onchange="changeQty('${i.name}', this.value)"> = ₹${sub}
+          <br><button class="remove" onclick="remove('${i.name}')">Remove</button></div>`;
+      });
+      document.getElementById("cart").innerHTML = html;
+      document.getElementById("total").textContent = total;
+    };
+  </script>
+</body>
+</html>
